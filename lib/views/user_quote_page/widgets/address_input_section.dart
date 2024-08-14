@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_view_model.dart';
+import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'package:country_picker/country_picker.dart';
 
 class AddressInputSection extends StatelessWidget {

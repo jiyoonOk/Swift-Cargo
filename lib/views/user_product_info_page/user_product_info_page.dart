@@ -1,6 +1,7 @@
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_view_model.dart';
+import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'widgets/image_preview_widget.dart';
 import 'package:fast_1/views/widgets/next_step_button.dart';
 import 'package:fast_1/views/user_quote_deadline_page/user_quote_deadline_page.dart';
@@ -48,7 +49,13 @@ class ProductInfoPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => QuoteDeadlinePage()),
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChangeNotifierProvider<UserQuoteViewModel>(
+                      create: (_) => UserQuoteViewModel(),
+                      child: QuoteDeadlinePage(),
+                    ),
+                  ),
                 );
               },
             ),

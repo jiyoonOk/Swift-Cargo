@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_view_model.dart';
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
+import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'package:fast_1/views/widgets/next_step_button.dart';
 import 'package:fast_1/views/user_quote_complete_page/user_quote_complete_page.dart';
 
 class QuoteDeadlinePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<QuoteViewModel>();
+    final viewModel = Provider.of<UserQuoteViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,10 +45,17 @@ class QuoteDeadlinePage extends StatelessWidget {
             ),
             SizedBox(height: 20),
             NextStepButton(
-              onPressed: () {
+              onPressed: () async {
+                await viewModel.submitUserQuote();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => QuoteCompletePage()),
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        ChangeNotifierProvider<QuoteViewModel>(
+                      create: (_) => QuoteViewModel(),
+                      child: QuoteCompletePage(),
+                    ),
+                  ),
                 );
               },
               label: '견적 요청',
@@ -58,8 +66,7 @@ class QuoteDeadlinePage extends StatelessWidget {
     );
   }
 
-  // 마감일 선택 함수
-  void _selectDate(BuildContext context, QuoteViewModel viewModel) async {
+  void _selectDate(BuildContext context, UserQuoteViewModel viewModel) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: viewModel.quoteDeadline,
@@ -68,7 +75,7 @@ class QuoteDeadlinePage extends StatelessWidget {
     );
 
     if (pickedDate != null && pickedDate != viewModel.quoteDeadline) {
-      viewModel.updateQuoteDeadline(pickedDate);
+      viewModel.quoteDeadline = pickedDate;
     }
   }
 }

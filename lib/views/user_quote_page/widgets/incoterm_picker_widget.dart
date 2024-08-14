@@ -1,7 +1,7 @@
 import 'package:fast_1/constants/app_incoterms.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_view_model.dart';
+import 'package:fast_1/view_models/quote_viewmodel.dart';
 
 class IncotermPickerWidget extends StatelessWidget {
   @override

@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'utils/dependency_injection.dart';
 import 'constants/app_theme.dart';
-import 'view_models/quote_view_model.dart';
-import 'views/user_quote_page/user_quote_page.dart';
+import 'package:fast_1/view_models/hscode_viewmodel.dart';
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
+import 'package:fast_1/view_models/quote_viewmodel.dart'; // 추가된 부분
+import 'package:fast_1/views/user_quote_page/user_quote_page.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => QuoteViewModel()),
-      ],
-      child: MyApp(),
-    ),
-  );
+  setupLocator(); // 의존성 주입 설정을 초기화
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -21,7 +18,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Shipping App',
       theme: AppTheme.themeData,
-      home: ShippingPage(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => locator<HSCodeViewModel>()),
+          ChangeNotifierProvider(create: (_) => locator<UserQuoteViewModel>()),
+          ChangeNotifierProvider(
+              create: (_) => locator<QuoteViewModel>()), // 추가된 부분
+        ],
+        child: ShippingPage(),
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_view_model.dart';
+import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'widgets/address_input_section.dart';
 import 'widgets/date_picker_widget.dart';
 import 'widgets/incoterm_picker_widget.dart';
@@ -38,7 +38,12 @@ class ShippingPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ProductInfoPage()),
+                  MaterialPageRoute(
+                    builder: (context) => ChangeNotifierProvider<QuoteViewModel>(
+                      create: (_) => QuoteViewModel(), // QuoteViewModel 인스턴스 생성
+                      child: ProductInfoPage(),
+                    ),
+                  ),
                 );
               },
             ),
