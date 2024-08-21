@@ -44,8 +44,8 @@ class UserQuote {
     this.packaging_info = '',
     this.total_items = 0,
     this.quote_deadline = '',
-    this.images = const [],
-  });
+    List<QuoteImage>? images,
+  }) : images = images ?? [];
 
   UserQuote.init() : this();
 
@@ -89,7 +89,9 @@ class UserQuote {
       packaging_info: packaging_info ?? this.packaging_info,
       total_items: total_items ?? this.total_items,
       quote_deadline: quote_deadline ?? this.quote_deadline,
-      images: images ?? this.images,
+      images: images != null
+          ? List<QuoteImage>.from(images)
+          : List<QuoteImage>.from(this.images ?? []),
     );
   }
 

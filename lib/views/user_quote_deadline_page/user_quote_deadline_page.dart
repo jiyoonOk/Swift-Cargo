@@ -37,8 +37,10 @@ class QuoteDeadlinePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                        '${viewModel.currentQuote.quote_deadline}'
-                            .split(' ')[0],
+                        viewModel.currentQuote.quote_deadline.isNotEmpty
+                            ? DateFormat('yyyy-MM-dd').format(DateTime.parse(
+                                viewModel.currentQuote.quote_deadline))
+                            : '날짜를 선택하세요',
                         style: TextStyle(fontSize: 16)),
                     Icon(Icons.calendar_today),
                   ],
