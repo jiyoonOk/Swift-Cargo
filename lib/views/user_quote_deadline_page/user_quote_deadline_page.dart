@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:fast_1/view_models/user_quote_viewmodel.dart';
-import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'package:fast_1/views/widgets/next_step_button.dart';
 import 'package:fast_1/views/user_quote_complete_page/user_quote_complete_page.dart';
 
@@ -36,7 +36,9 @@ class QuoteDeadlinePage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('${viewModel.quoteDeadline.toLocal()}'.split(' ')[0],
+                    Text(
+                        '${viewModel.currentQuote.quote_deadline}'
+                            .split(' ')[0],
                         style: TextStyle(fontSize: 16)),
                     Icon(Icons.calendar_today),
                   ],
@@ -46,13 +48,12 @@ class QuoteDeadlinePage extends StatelessWidget {
             SizedBox(height: 20),
             NextStepButton(
               onPressed: () async {
-                await viewModel.submitUserQuote();
+                await viewModel.addOrUpdateQuote(); //서버로 데이터 전송
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ChangeNotifierProvider<QuoteViewModel>(
-                      create: (_) => QuoteViewModel(),
+                    builder: (context) => ChangeNotifierProvider.value(
+                      value: viewModel,
                       child: QuoteCompletePage(),
                     ),
                   ),
@@ -69,13 +70,17 @@ class QuoteDeadlinePage extends StatelessWidget {
   void _selectDate(BuildContext context, UserQuoteViewModel viewModel) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: viewModel.quoteDeadline,
+      initialDate: viewModel.currentQuote.quote_deadline != ''
+          ? DateTime.parse(viewModel.currentQuote.quote_deadline)
+          : DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime(2030),
     );
 
-    if (pickedDate != null && pickedDate != viewModel.quoteDeadline) {
-      viewModel.quoteDeadline = pickedDate;
+    if (pickedDate != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+      viewModel.updateCurrentQuote(
+          viewModel.currentQuote.copyWith(quote_deadline: formattedDate));
     }
   }
 }

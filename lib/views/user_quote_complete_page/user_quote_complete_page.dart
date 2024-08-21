@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_viewmodel.dart';
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
 
 class QuoteCompletePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<QuoteViewModel>();
+    final viewModel = context.watch<UserQuoteViewModel>();
+
+    DateTime quoteDeadline =
+        DateTime.tryParse(viewModel.currentQuote.quote_deadline)?.toLocal() ??
+            DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
@@ -29,15 +33,16 @@ class QuoteCompletePage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             SizedBox(height: 10),
-            _buildQuoteDetail('물품명', viewModel.itemName),
-            _buildQuoteDetail('HSCode', viewModel.hsCode),
-            _buildQuoteDetail('총금액', '${viewModel.totalPrice.toInt()} 원'),
+            _buildQuoteDetail('물품명', viewModel.currentQuote.item_name),
+            _buildQuoteDetail('HSCode', viewModel.currentQuote.hs_code),
+            _buildQuoteDetail('총금액', '${viewModel.currentQuote.total_price} 원'),
+            _buildQuoteDetail('부피',
+                '${viewModel.currentQuote.volume} ${viewModel.currentQuote.volume_unit}'),
+            _buildQuoteDetail('포장정보', viewModel.currentQuote.packaging_info),
             _buildQuoteDetail(
-                '부피', '${viewModel.volume} ${viewModel.volumeUnit}'),
-            _buildQuoteDetail('포장정보', viewModel.packagingInfo),
-            _buildQuoteDetail('개수', viewModel.totalItems.toString()),
-            _buildQuoteDetail('견적 요청 마감일',
-                viewModel.quoteDeadline.toLocal().toString().split(' ')[0]),
+                '개수', viewModel.currentQuote.total_items.toString()),
+            _buildQuoteDetail(
+                '견적 요청 마감일', quoteDeadline.toString().split(' ')[0]),
           ],
         ),
       ),

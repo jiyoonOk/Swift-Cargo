@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_viewmodel.dart';
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
 import 'package:country_picker/country_picker.dart';
 
 class AddressInputSection extends StatelessWidget {
@@ -10,7 +10,7 @@ class AddressInputSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<QuoteViewModel>();
+    final viewModel = context.watch<UserQuoteViewModel>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +32,7 @@ class AddressInputSection extends StatelessWidget {
               GestureDetector(
                 onTap: () => _selectCountry(context, viewModel),
                 child: Text(
-                  '국가 : ${isDeparture ? viewModel.originCountry : viewModel.destinationCountry}',
+                  '국가 : ${isDeparture ? viewModel.currentQuote.origin_country : viewModel.currentQuote.destination_country}',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
@@ -40,8 +40,10 @@ class AddressInputSection extends StatelessWidget {
               TextField(
                 onChanged: (value) {
                   isDeparture
-                      ? viewModel.updateOriginAddress(value)
-                      : viewModel.updateDestinationAddress(value);
+                      ? viewModel.updateCurrentQuote(viewModel.currentQuote
+                          .copyWith(origin_address: value))
+                      : viewModel.updateCurrentQuote(viewModel.currentQuote
+                          .copyWith(destination_address: value));
                 },
                 decoration: InputDecoration(
                   hintText: '세부주소',
@@ -57,14 +59,16 @@ class AddressInputSection extends StatelessWidget {
   }
 
   // 국가 선택 함수
-  void _selectCountry(BuildContext context, QuoteViewModel viewModel) {
+  void _selectCountry(BuildContext context, UserQuoteViewModel viewModel) {
     showCountryPicker(
       context: context,
       showPhoneCode: false,
       onSelect: (Country country) {
         isDeparture
-            ? viewModel.updateOriginCountry(country.name)
-            : viewModel.updateDestinationCountry(country.name);
+            ? viewModel.updateCurrentQuote(
+                viewModel.currentQuote.copyWith(origin_country: country.name))
+            : viewModel.updateCurrentQuote(viewModel.currentQuote
+                .copyWith(destination_country: country.name));
       },
     );
   }

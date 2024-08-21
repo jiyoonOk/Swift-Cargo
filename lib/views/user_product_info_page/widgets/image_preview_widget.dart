@@ -1,13 +1,14 @@
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
+import 'package:fast_1/models/quote_image_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class ImagePreviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<QuoteViewModel>();
+    final viewModel = context.watch<UserQuoteViewModel>();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -23,37 +24,39 @@ class ImagePreviewWidget extends StatelessWidget {
   }
 
   // 이미지 선택 함수
-  Future<void> _pickImage(QuoteViewModel viewModel) async {
+  Future<void> _pickImage(UserQuoteViewModel viewModel) async {
     final ImagePicker picker = ImagePicker();
     final List<XFile>? images = await picker.pickMultiImage();
 
     if (images != null && images.isNotEmpty) {
       for (var image in images) {
-        viewModel.addImage(image);
+        viewModel.addImage(QuoteImage(path: image.path));
       }
     }
   }
 
   // 이미지 미리보기 빌드 함수
-  Widget _buildImagePreview(QuoteViewModel viewModel) {
-    return viewModel.images.isNotEmpty
+  Widget _buildImagePreview(UserQuoteViewModel viewModel) {
+    return (viewModel.currentQuote.images != null &&
+            viewModel.currentQuote.images!.isNotEmpty)
         ? Wrap(
             spacing: 10,
             runSpacing: 10,
-            children: viewModel.images.asMap().entries.map((entry) {
+            children:
+                viewModel.currentQuote.images!.asMap().entries.map((entry) {
               int index = entry.key;
-              XFile image = entry.value;
+              QuoteImage image = entry.value;
               return Stack(
                 children: [
                   Image.file(
                     File(image.path),
-                    height: 150,
+                    height: 100,
                   ),
                   Positioned(
                     right: 0,
                     child: GestureDetector(
                       onTap: () => viewModel.removeImage(index),
-                      child: Icon(Icons.cancel, color: Colors.red),
+                      child: Icon(Icons.cancel, color: Colors.black),
                     ),
                   ),
                 ],

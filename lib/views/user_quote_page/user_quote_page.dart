@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_viewmodel.dart';
+import 'package:fast_1/view_models/user_quote_viewmodel.dart';
 import 'widgets/address_input_section.dart';
 import 'widgets/date_picker_widget.dart';
 import 'widgets/incoterm_picker_widget.dart';
@@ -10,9 +10,12 @@ import 'package:fast_1/views/user_product_info_page/user_product_info_page.dart'
 class ShippingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // ShippingPage 위젯 트리에서 UserQuoteViewModel에 접근
+    final viewModel = context.watch<UserQuoteViewModel>();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Shipping'),
+        title: Text('견적서 등록'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -39,8 +42,8 @@ class ShippingPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ChangeNotifierProvider<QuoteViewModel>(
-                      create: (_) => QuoteViewModel(), // QuoteViewModel 인스턴스 생성
+                    builder: (context) => ChangeNotifierProvider.value(
+                      value: viewModel,
                       child: ProductInfoPage(),
                     ),
                   ),
@@ -55,17 +58,19 @@ class ShippingPage extends StatelessWidget {
 
   // 탭 버튼 빌드 함수
   Widget _buildTabButton(BuildContext context, int index, String text) {
-    final viewModel = context.watch<QuoteViewModel>();
+    final viewModel = context.watch<UserQuoteViewModel>();
 
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          viewModel.updateTabIndex(index);
+          //TODO: viewModel에서 수출/수입 탭 상태를 업데이트하는 메서드 추가 필요
+          viewModel.updateCurrentQuote(
+              viewModel.currentQuote.copyWith(export_import_type: text));
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: viewModel.selectedTabIndex == index
+            color: viewModel.currentQuote.export_import_type == text
                 ? Theme.of(context).primaryColor
                 : Colors.white,
             border: Border.all(color: Theme.of(context).primaryColor),
@@ -80,7 +85,7 @@ class ShippingPage extends StatelessWidget {
             child: Text(
               text,
               style: TextStyle(
-                color: viewModel.selectedTabIndex == index
+                color: viewModel.currentQuote.export_import_type == text
                     ? Colors.white
                     : Theme.of(context).primaryColor,
                 fontWeight: FontWeight.bold,

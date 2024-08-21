@@ -1,7 +1,6 @@
 import 'package:fast_1/view_models/user_quote_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fast_1/view_models/quote_viewmodel.dart';
 import 'widgets/image_preview_widget.dart';
 import 'package:fast_1/views/widgets/next_step_button.dart';
 import 'package:fast_1/views/user_quote_deadline_page/user_quote_deadline_page.dart';
@@ -9,7 +8,8 @@ import 'package:fast_1/views/user_quote_deadline_page/user_quote_deadline_page.d
 class ProductInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<QuoteViewModel>();
+    // 위젯 트리에서 UserQuoteViewModel에 접근
+    final viewModel = context.watch<UserQuoteViewModel>();
 
     return Scaffold(
       appBar: AppBar(
@@ -20,6 +20,7 @@ class ProductInfoPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 이 필드들은 viewModel의 함수를 직접 사용하여 상태를 업데이트합니다.
             _buildInputField('물품명', viewModel.updateItemName),
             _buildInputField('HSCode', viewModel.updateHSCode),
             _buildInputFieldWithConversion(
@@ -50,9 +51,8 @@ class ProductInfoPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        ChangeNotifierProvider<UserQuoteViewModel>(
-                      create: (_) => UserQuoteViewModel(),
+                    builder: (context) => ChangeNotifierProvider.value(
+                      value: viewModel,
                       child: QuoteDeadlinePage(),
                     ),
                   ),
@@ -65,7 +65,7 @@ class ProductInfoPage extends StatelessWidget {
     );
   }
 
-  // 입력 필드 빌드 함수
+  // 입력 필드 생성 헬퍼 함수
   Widget _buildInputField(String label, Function(String) onChanged) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -87,7 +87,7 @@ class ProductInfoPage extends StatelessWidget {
     );
   }
 
-  // 숫자 변환이 필요한 입력 필드를 위한 빌드 함수
+  // 숫자 변환 입력 필드 생성 헬퍼 함수
   Widget _buildInputFieldWithConversion(
       String label, Function(String) onChanged) {
     return Padding(

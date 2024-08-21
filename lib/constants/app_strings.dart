@@ -1,6 +1,6 @@
 // 앱에서 사용되는 문자열 상수를 관리하는 파일
 class AppStrings {
-  static const String appBarTitle = 'Shipping';
+  static const String appBarTitle = '견적 요청';
   static const String defaultCountryText = '국가를 선택하세요';
   static const String defaultIncotermText = '인코텀즈 선택';
   static const String departureTitle = '출발지';
